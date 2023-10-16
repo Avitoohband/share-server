@@ -44,13 +44,17 @@ export const addRemoveFriend = async (req, res) => {
 };
 
 const getFriendsHelper = async (user) => {
-  const friends = await Promise.all(
-    user.friends.map((id) => User.findById(id))
-  );
-  const formattedFriends = friends.map(
-    ({ _id, firstName, lastName, occupation, location, picturePath }) => {
-      return { _id, firstName, lastName, occupation, location, picturePath };
-    }
-  );
-  return res.status(200).json(formattedFriends);
+  try {
+    const friends = await Promise.all(
+      user.friends.map((id) => User.findById(id))
+    );
+    const formattedFriends = friends.map(
+      ({ _id, firstName, lastName, occupation, location, picturePath }) => {
+        return { _id, firstName, lastName, occupation, location, picturePath };
+      }
+    );
+    return res.status(200).json(formattedFriends);
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
 };
